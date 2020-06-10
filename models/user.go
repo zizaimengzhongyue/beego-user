@@ -32,3 +32,19 @@ func Delete(uid int) int {
 	num, _ := result.RowsAffected()
 	return int(num)
 }
+
+func Add(user *User) int {
+	o := orm.NewOrm()
+	num, _ := o.Insert(user)
+	return int(num)
+}
+
+func Update(user *User) int {
+	o := orm.NewOrm()
+	num, _ := o.Update(user)
+	return int(num)
+}
+
+func init() {
+	orm.RegisterModelWithPrefix("beego_", new(User))
+}

@@ -21,7 +21,31 @@ func (this *UserController) GetAll() {
 
 func (this *UserController) Delete() {
 	uid, _ := this.GetInt(":uid")
-    num := models.Delete(uid)
+	num := models.Delete(uid)
+	this.Return(0, "ok", num)
+}
+
+func (this *UserController) Add() {
+	uid, _ := this.GetInt(":uid")
+	name := this.GetString(":name")
+	user := &models.User{
+		Uid:  uid,
+		Name: name,
+	}
+	num := models.Add(user)
+	this.Return(0, "ok", num)
+}
+
+func (this *UserController) Update() {
+	id, _ := this.GetInt(":id")
+	uid, _ := this.GetInt(":uid")
+	name := this.GetString(":name")
+	user := &models.User{
+		Id:   id,
+		Uid:  uid,
+		Name: name,
+	}
+	num := models.Update(user)
 	this.Return(0, "ok", num)
 }
 
@@ -32,8 +56,6 @@ func (this *UserController) Return(status int, msg string, data interface{}) {
 		Data   interface{} `json:"data"`
 	}
 	res := response{Status: status, Msg: msg, Data: data}
-	bts, err := json.Marshal(res)
-	if err != nil {
-	}
+	bts, _ := json.Marshal(res)
 	this.Ctx.WriteString(string(bts))
 }
