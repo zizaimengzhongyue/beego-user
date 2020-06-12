@@ -2,13 +2,14 @@ package models
 
 import (
 	"fmt"
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 )
 
 const (
 	getAllUser = "SELECT * FROM beego_user"
 	deleteUser = "DELETE FROM beego_user WHERE uid = ?"
-    selectUser = "SELECT * FROM beego_user WHERE uid = ?"
+	selectUser = "SELECT * FROM beego_user WHERE uid = ?"
 )
 
 type User struct {
@@ -27,30 +28,46 @@ func ReadAll() []User {
 	return users
 }
 
-func Delete(uid int) int {
+func Delete(uid int) (int, error) {
 	o := orm.NewOrm()
-	result, _ := o.Raw(deleteUser, uid).Exec()
+	result, err := o.Raw(deleteUser, uid).Exec()
+	if err != nil {
+		logs.Warn(err)
+		return 0, err
+	}
 	num, _ := result.RowsAffected()
-	return int(num)
+	return int(num), nil
 }
 
-func Add(user *User) int {
+func Add(user *User) (int, error) {
 	o := orm.NewOrm()
-	num, _ := o.Insert(user)
-	return int(num)
+	num, err := o.Insert(user)
+	if err != nil {
+		logs.Warn(err)
+		return 0, err
+	}
+	return int(num), nil
 }
 
-func Update(user *User) int {
+func Update(user *User) (int, error) {
 	o := orm.NewOrm()
-	num, _ := o.Update(user)
-	return int(num)
+	num, err := o.Update(user)
+	if err != nil {
+		logs.Warn(err)
+		return 0, err
+	}
+	return int(num), nil
 }
 
-func Find(uid int) User {
-    user := User{}
-    o := orm.NewOrm()
-    _ = o.Raw(selectUser, uid).QueryRow(&user)
-    return user
+func Find(uid int) (User, error) {
+	user := User{}
+	o := orm.NewOrm()
+	err := o.Raw(selectUser, uid).QueryRow(&user)
+	if err != nil {
+		logs.Warn(err)
+		return user, err
+	}
+	return user, nil
 }
 
 func init() {
