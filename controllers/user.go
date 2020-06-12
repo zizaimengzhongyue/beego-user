@@ -49,6 +49,12 @@ func (this *UserController) Update() {
 	this.Return(0, "ok", num)
 }
 
+func (this *UserController) Find() {
+	uid, _ := this.GetInt(":uid")
+	user := models.Find(uid)
+	this.Return(0, "ok", user)
+}
+
 func (this *UserController) Return(status int, msg string, data interface{}) {
 	type response struct {
 		Status int         `json:"status"`

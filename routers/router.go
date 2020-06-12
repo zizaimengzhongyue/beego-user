@@ -11,4 +11,5 @@ func init() {
 	beego.Router("/user/delete/:uid", &controllers.UserController{}, "*:Delete")
 	beego.Router("/user/add/:uid/:name", &controllers.UserController{}, "*:Add")
     beego.Router("/user/update/:id/:uid/:name", &controllers.UserController{}, "*:Update")
+    beego.Router("/user/find/:uid", &controllers.UserController{}, "*:Find")
 }

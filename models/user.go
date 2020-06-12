@@ -8,6 +8,7 @@ import (
 const (
 	getAllUser = "SELECT * FROM beego_user"
 	deleteUser = "DELETE FROM beego_user WHERE uid = ?"
+    selectUser = "SELECT * FROM beego_user WHERE uid = ?"
 )
 
 type User struct {
@@ -43,6 +44,13 @@ func Update(user *User) int {
 	o := orm.NewOrm()
 	num, _ := o.Update(user)
 	return int(num)
+}
+
+func Find(uid int) User {
+    user := User{}
+    o := orm.NewOrm()
+    _ = o.Raw(selectUser, uid).QueryRow(&user)
+    return user
 }
 
 func init() {
