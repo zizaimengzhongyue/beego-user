@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"time"
 
 	"beego.baidu.com/models"
 	"github.com/astaxie/beego"
@@ -98,5 +99,12 @@ func (this *UserController) Return(status int, msg string, data interface{}) {
 func (this *UserController) Error(err error) {
 	logs.Warn(err)
 	this.Return(1, "error", "发生了一些错误，我们在紧急处理")
-    this.StopRun()
+	this.StopRun()
+}
+
+func (this *UserController) Prepare() {
+	clientIP := this.Ctx.Input.IP()
+	bts, _ := json.Marshal(this.Ctx.Input.Params())
+	current := time.Now().Format(time.UnixDate)
+	logs.Info(clientIP, current, string(bts))
 }
