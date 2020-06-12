@@ -17,7 +17,6 @@ func (this *UserController) GetAll() {
 	bts, err := json.Marshal(users)
 	if err != nil {
 		this.Error(err)
-		return
 	}
 	this.Return(0, "ok", bts)
 }
@@ -26,12 +25,10 @@ func (this *UserController) Delete() {
 	uid, err := this.GetInt(":uid")
 	if err != nil {
 		this.Error(err)
-		return
 	}
 	num, err := models.Delete(uid)
 	if err != nil {
 		this.Error(err)
-		return
 	}
 	this.Return(0, "ok", num)
 }
@@ -40,7 +37,6 @@ func (this *UserController) Add() {
 	uid, err := this.GetInt(":uid")
 	if err != nil {
 		this.Error(err)
-		return
 	}
 	name := this.GetString(":name")
 	user := &models.User{
@@ -50,7 +46,6 @@ func (this *UserController) Add() {
 	num, err := models.Add(user)
 	if err != nil {
 		this.Error(err)
-		return
 	}
 	this.Return(0, "ok", num)
 }
@@ -59,12 +54,10 @@ func (this *UserController) Update() {
 	id, err := this.GetInt(":id")
 	if err != nil {
 		this.Error(err)
-		return
 	}
 	uid, err := this.GetInt(":uid")
 	if err != nil {
 		this.Error(err)
-		return
 	}
 	name := this.GetString(":name")
 	user := &models.User{
@@ -75,7 +68,6 @@ func (this *UserController) Update() {
 	num, err := models.Update(user)
 	if err != nil {
 		this.Error(err)
-		return
 	}
 	this.Return(0, "ok", num)
 }
@@ -84,12 +76,10 @@ func (this *UserController) Find() {
 	uid, err := this.GetInt(":uid")
 	if err != nil {
 		this.Error(err)
-		return
 	}
 	user, err := models.Find(uid)
 	if err != nil {
 		this.Error(err)
-		return
 	}
 	this.Return(0, "ok", user)
 }
@@ -108,4 +98,5 @@ func (this *UserController) Return(status int, msg string, data interface{}) {
 func (this *UserController) Error(err error) {
 	logs.Warn(err)
 	this.Return(1, "error", "发生了一些错误，我们在紧急处理")
+    this.StopRun()
 }
