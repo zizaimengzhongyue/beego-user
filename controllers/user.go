@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 
-	"beego.baidu.com/models"
+	"github.com/zizaimengzhongyue/beego-user/models"
 	"github.com/astaxie/beego/logs"
 )
 

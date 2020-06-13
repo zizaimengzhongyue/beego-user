@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"time"
 
-	"beego.baidu.com/controllers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
+
+    "github.com/zizaimengzhongyue/beego-user/controllers"
 )
 
 var (
