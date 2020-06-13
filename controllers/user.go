@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 
 	"beego.baidu.com/models"
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 )
 
 type UserController struct {
-	beego.Controller
+    BaseController
 }
 
 func (this *UserController) GetAll() {

@@ -16,6 +16,7 @@ var (
 
 func init() {
 	log.SetLogger("file", `{"filename": "log/access.log"}`)
+	logs.SetLogger("file", `{"filename": "log/beego_user.log"}`)
 
 	beego.InsertFilter("*", beego.BeforeRouter, SetRequestTime, false)
 	beego.InsertFilter("*", beego.FinishRouter, PrintAccessLog, false)
