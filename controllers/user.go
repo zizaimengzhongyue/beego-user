@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"time"
 
 	"beego.baidu.com/models"
 	"github.com/astaxie/beego"
@@ -14,75 +13,142 @@ type UserController struct {
 }
 
 func (this *UserController) GetAll() {
-	users := models.ReadAll()
-	bts, err := json.Marshal(users)
+	var (
+		users []models.User
+		bts   []byte
+		err   error
+	)
+
+	users = models.ReadAll()
+	bts, err = json.Marshal(users)
+	if err != nil {
+		goto end
+	}
+
+end:
 	if err != nil {
 		this.Error(err)
+	} else {
+		this.Return(0, "ok", bts)
 	}
-	this.Return(0, "ok", bts)
 }
 
 func (this *UserController) Delete() {
-	uid, err := this.GetInt(":uid")
+	var (
+		uid int
+		num int
+		err error
+	)
+	uid, err = this.GetInt(":uid")
 	if err != nil {
-		this.Error(err)
+		goto end
 	}
-	num, err := models.Delete(uid)
+	num, err = models.Delete(uid)
 	if err != nil {
-		this.Error(err)
+		goto end
 	}
 	this.Return(0, "ok", num)
+
+end:
+	if err != nil {
+		this.Error(err)
+	} else {
+		this.Return(0, "ok", num)
+	}
 }
 
 func (this *UserController) Add() {
-	uid, err := this.GetInt(":uid")
+	var (
+		uid  int
+		name string
+		user *models.User
+		num  int
+		err  error
+	)
+
+	uid, err = this.GetInt(":uid")
 	if err != nil {
-		this.Error(err)
+		goto end
 	}
-	name := this.GetString(":name")
-	user := &models.User{
+	name = this.GetString(":name")
+	user = &models.User{
 		Uid:  uid,
 		Name: name,
 	}
-	num, err := models.Add(user)
+	num, err = models.Add(user)
+	if err != nil {
+		goto end
+	}
+
+end:
 	if err != nil {
 		this.Error(err)
+	} else {
+		this.Return(0, "ok", num)
 	}
-	this.Return(0, "ok", num)
 }
 
 func (this *UserController) Update() {
-	id, err := this.GetInt(":id")
+	var (
+		id   int
+		uid  int
+		name string
+		user *models.User
+		num  int
+		err  error
+	)
+
+	id, err = this.GetInt(":id")
 	if err != nil {
-		this.Error(err)
+		goto end
 	}
-	uid, err := this.GetInt(":uid")
+	uid, err = this.GetInt(":uid")
 	if err != nil {
-		this.Error(err)
+		goto end
 	}
-	name := this.GetString(":name")
-	user := &models.User{
+	name = this.GetString(":name")
+	user = &models.User{
 		Id:   id,
 		Uid:  uid,
 		Name: name,
 	}
-	num, err := models.Update(user)
+	num, err = models.Update(user)
 	if err != nil {
-		this.Error(err)
+		goto end
 	}
 	this.Return(0, "ok", num)
+
+end:
+	if err != nil {
+		this.Error(err)
+	} else {
+		this.Return(0, "ok", user)
+	}
 }
 
 func (this *UserController) Find() {
-	uid, err := this.GetInt(":uid")
+	var (
+		user models.User
+		uid  int
+		err  error
+	)
+
+	uid, err = this.GetInt(":uid")
+	if err != nil {
+		goto end
+	}
+	user, err = models.Find(uid)
+	if err != nil {
+		goto end
+	}
+
+end:
 	if err != nil {
 		this.Error(err)
+	} else {
+		this.Return(0, "ok", user)
 	}
-	user, err := models.Find(uid)
-	if err != nil {
-		this.Error(err)
-	}
-	this.Return(0, "ok", user)
+
 }
 
 func (this *UserController) Return(status int, msg string, data interface{}) {
@@ -91,20 +157,17 @@ func (this *UserController) Return(status int, msg string, data interface{}) {
 		Msg    string      `json:"msg"`
 		Data   interface{} `json:"data"`
 	}
-	res := response{Status: status, Msg: msg, Data: data}
-	bts, _ := json.Marshal(res)
+	var (
+		res response
+		bts []byte
+	)
+
+	res = response{Status: status, Msg: msg, Data: data}
+	bts, _ = json.Marshal(res)
 	this.Ctx.WriteString(string(bts))
 }
 
 func (this *UserController) Error(err error) {
 	logs.Warn(err)
 	this.Return(1, "error", "发生了一些错误，我们在紧急处理")
-	this.StopRun()
-}
-
-func (this *UserController) Prepare() {
-	clientIP := this.Ctx.Input.IP()
-	bts, _ := json.Marshal(this.Ctx.Input.Params())
-	current := time.Now().Format(time.UnixDate)
-	logs.Info(clientIP, current, string(bts))
 }
