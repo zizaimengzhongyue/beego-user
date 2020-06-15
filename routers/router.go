@@ -7,8 +7,10 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
+	"github.com/astaxie/beego/orm"
+	_ "github.com/go-sql-driver/mysql"
 
-    "github.com/zizaimengzhongyue/beego-user/controllers"
+	"github.com/zizaimengzhongyue/beego-user/controllers"
 )
 
 var (
@@ -18,6 +20,9 @@ var (
 func init() {
 	log.SetLogger("file", `{"filename": "log/access.log"}`)
 	logs.SetLogger("file", `{"filename": "log/beego_user.log"}`)
+
+	orm.Debug = true
+	orm.RegisterDataBase("default", "mysql", "root:123456@tcp(127.0.0.1:3306)/beego?charset=utf8", 30)
 
 	beego.InsertFilter("*", beego.BeforeRouter, SetRequestTime, false)
 	beego.InsertFilter("*", beego.FinishRouter, PrintAccessLog, false)

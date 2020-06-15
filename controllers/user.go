@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	"github.com/zizaimengzhongyue/beego-user/models"
-	"github.com/astaxie/beego/logs"
 )
 
 type UserController struct {
@@ -148,25 +147,4 @@ end:
 		this.Return(0, "ok", user)
 	}
 
-}
-
-func (this *UserController) Return(status int, msg string, data interface{}) {
-	type response struct {
-		Status int         `json:"status"`
-		Msg    string      `json:"msg"`
-		Data   interface{} `json:"data"`
-	}
-	var (
-		res response
-		bts []byte
-	)
-
-	res = response{Status: status, Msg: msg, Data: data}
-	bts, _ = json.Marshal(res)
-	this.Ctx.WriteString(string(bts))
-}
-
-func (this *UserController) Error(err error) {
-	logs.Warn(err)
-	this.Return(1, "error", "发生了一些错误，我们在紧急处理")
 }
